@@ -3,13 +3,37 @@
 
 ## Write a short comment describing this function
 
-makeCacheMatrix <- function(x = matrix()) {
 
+makeCacheMatrix <- function(x = matrix()) {
+    #Same struct as cache vector
+    #Create empty Cache
+    inv <- NULL
+    #Invalidate Cache on mutation
+    set <- function(y) {
+        x <<- y
+        inv <<- NULL
+    }
+    #Create getter
+    get <- function() x
+    #setter for cache
+    setinverse <- function(inverse) inv <<- inverse
+    #getter for cache
+    getinverse <- function() inv
+    list(set=set, get=get, setinverse=setinverse, getinverse=getinverse)
 }
 
 
-## Write a short comment describing this function
-
-cacheSolve <- function(x, ...) {
-        ## Return a matrix that is the inverse of 'x'
+#more arities wouldn't make sense
+cacheSolve <- function(x = makeCacheMatrix()) {
+    inv <- x$getinverse()
+    if(!is.null(inv)) {
+        message("getting cached data.")
+        return(inv)
+    }
+    data <- x$get()
+    # Invert the matrix
+    inv <- solve(data)
+    #Cache the result
+    x$setinverse(inv)
+    inv
 }
